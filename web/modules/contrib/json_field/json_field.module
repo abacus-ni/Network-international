@@ -1,0 +1,89 @@
+<?php
+
+/**
+ * @file
+ * Primary hook implementations for the JSON Field module.
+ */
+
+use Drupal\Core\Routing\RouteMatchInterface;
+use Drupal\Core\Database\Database;
+use Drupal\file\Entity\File;
+use Symfony\Component\Yaml\Yaml; 
+use Drupal\node\Entity\Node;
+
+function json_field_cron(){
+
+  
+
+  //$definitions = \Drupal::service('entity_field.manager')->getFieldStorageDefinitions('node');
+  
+  $nids = \Drupal::entityQuery('node')->condition('type','yaml_files')->execute();
+  
+          $nodes =  \Drupal\node\Entity\Node::loadMultiple($nids);
+         
+          //$file_uri = $nodes->getFileUri();
+          foreach($nodes as $node){
+           // dump($node);
+            
+            $field = $node->get('field_yaml_file')->getValue(); 
+            // dump($field);
+           // dump($field);
+           
+            // $drupal_file_uri = file_load($field[0]['target_id']); 
+            $drupal_file_uri = File::load($field[0]['target_id']);
+            $url = file_create_url($drupal_file_uri->getFileUri());
+             
+  
+            // $file_path = DRUPAL_ROOT . '/core/modules/toolbar/toolbar.breakpoints.yml';
+            $file_contents = file_get_contents($url);
+            $ymldata = Yaml::parse($file_contents);
+            
+           $arr_to_json = json_encode($ymldata);
+           $flag_field = $node->get('field_flag')->getValue(); 
+           $flag = $flag_field[0]['value'];
+
+           
+           if ($flag == 'false') {
+            
+            
+           // $field = $node->get('field_yaml_file')->getValue(); 
+            $node->set('field_flag', 'true');
+            $node->save();
+            $node = Node::create([   // create node of content 
+              'type'        => 'json_data',
+              'title'       => 'Json Data',
+              'field_json_data'=>$arr_to_json,
+              
+            ]); 
+            $node->save(); //node save
+           
+           }
+        
+           
+          }
+  }
+
+/**
+ * Implements hook_help().
+ */
+function json_field_help($route_name, RouteMatchInterface $route_match) {
+  switch ($route_name) {
+    // Main module help for the json_field module.
+    case 'help.page.json_field':
+      $output = '';
+      $output .= '<h3>' . t('About') . '</h3>';
+      $output .= '<p>' . t('Provides a JSON field, widgets and a formatter, and Views integration.') . '</p>';
+      return $output;
+
+    default:
+  }
+}
+
+/**
+ * Implements hook_theme().
+ */
+function json_field_theme() {
+  $theme = [];
+
+  return $theme;
+}
