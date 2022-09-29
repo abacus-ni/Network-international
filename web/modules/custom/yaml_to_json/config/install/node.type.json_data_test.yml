@@ -1,0 +1,14 @@
+# node.type.json_data_test.yml
+langcode: en
+status: true
+dependencies:
+  enforced:
+    module:
+      - yaml_to_json # This is the name of the module we're using for this example
+name: 'Json data test'
+type: json_data_test
+description: 'Content type that can be used to provide additional information on <em>json data</em>'
+help: ''
+new_revision: false
+preview_mode: 1
+display_submitted: true

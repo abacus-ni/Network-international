@@ -1,0 +1,22 @@
+# field.storage.node.field_json_information.yml
+langcode: en
+status: true
+dependencies:
+    config:
+        - field.storage.node.body
+        - node.type.json_data_test
+    module:
+        - text
+id: node.json_data_test.body
+field_name: body
+entity_type: node
+bundle: json_data_test
+label: Json Data Detail
+description: 'More specific information about the car brand.'
+required: false
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings:
+    display_summary: true
+field_type: text_with_summary

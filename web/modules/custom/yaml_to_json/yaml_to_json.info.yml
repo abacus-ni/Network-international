@@ -1,0 +1,5 @@
+name: Yaml to json conversion
+type: module
+description: ' Custom module to convert Yaml file into json drupal9.'
+package: Custom
+core_version_requirement: ^8 || ^9

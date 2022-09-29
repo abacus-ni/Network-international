@@ -1,0 +1,59 @@
+swagger: '2.0'
+info:
+  version: "1.0.0"
+  title: "Bill Payment"
+  description: "This API will use for bill payment"
+
+host: "sandbox.asiacell.com"
+basePath: "/v1/apigee"
+schemes:
+- "https"
+paths:
+  /billpayment:
+    post:
+      summary: "use for bill payment"
+      description: "This API will use for the bill payment"
+      operationId: "billpayment"
+      consumes:
+      - "application/json"
+      produces: 
+      - "application/json"
+      parameters:
+      - in: "header"
+        name: "Authorization"
+        description: "access token received from apigee prefixed with word 'Bearer'"
+        required: true
+        type: "string"
+      - name: "body"
+        required: true
+        in: "body"
+        schema:
+          type: object
+      
+      
+      responses:
+        201:
+          description: "OK"
+            
+        400:
+          description: "Request is wrong.---Bad Request"
+
+        401:
+          description: "The token is invalid.---Unauthorized"
+          
+        404:
+          description: "Invalid url---Resource Not Available.Kindly check the URL used"
+          
+          
+        503:
+          description: "Requested Service is not Responding. Please contact API Support Team.---Service Unavailable"
+          
+        520:
+          description: "Please contact API Support Team.----Internal Error"
+          
+        109:
+          description: "Retry again after one second."
+         
+         
+  
+  

@@ -1,0 +1,49 @@
+<?php
+
+/**
+ * @file
+ * Yaml data cnversion to Json.
+ */
+
+use Drupal\file\Entity\File;
+use Symfony\Component\Yaml\Yaml; 
+use Drupal\node\Entity\Node;
+use Drupal\Core\Form\FormStateInterface;
+
+/**
+ * Implements hook_node_form_alter.
+ */
+
+function yaml_to_json_form_node_form_alter(&$form, $form_state){
+  foreach (array_keys($form['actions']) as $action) {
+    if ($action != 'preview' && isset($form['actions'][$action]['#type']) && $form['actions'][$action]['#type'] === 'submit') {
+          $form['actions'][$action]['#submit'][] = 'mymodule_node_form_submit';
+    }
+  }
+}
+
+/**
+ * node form submit handler.
+ */
+
+function mymodule_node_form_submit(array &$form, FormStateInterface &$form_state) {  
+  $fid = $form_state->getValue('field_yaml_file');
+  $file= $fid[0]['fids'][0];
+  $drupal_file_uri = File::load($file);
+  $url = file_create_url($drupal_file_uri->getFileUri());
+  $file_contents = file_get_contents($url);
+  $ymldata = Yaml::parse($file_contents);
+  $arr_to_json = json_encode($ymldata);
+  $node = Node::create([   
+  'type'  => 'json_data_test',
+  'title' => 'Json Data new',
+  'body'=>$arr_to_json,
+  ]); 
+  $node->save();
+  \Drupal::logger('json_field')->info('A new JSON Data node created');    
+}
+
+
+
+
+
